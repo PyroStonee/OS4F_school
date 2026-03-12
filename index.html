@@ -3,182 +3,930 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OS4F_school</title>
+  <title>Neon Runner</title>
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: Arial, sans-serif;
+    }
+
+    :root {
+      --bg1: #070b16;
+      --bg2: #10182c;
+      --panel: rgba(10, 16, 30, 0.78);
+      --line: rgba(255, 255, 255, 0.14);
+      --text: #f3f6ff;
+      --muted: #a6b2d4;
+      --accent: #45e6ff;
+      --accent2: #ff4fd8;
+      --good: #6dff8f;
+      --warn: #ffcf5a;
+      --danger: #ff5b6e;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
     }
 
     body {
-      background: linear-gradient(135deg, #0f172a, #1e293b);
-      color: white;
-      line-height: 1.6;
+      min-height: 100vh;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(69, 230, 255, 0.16), transparent 28%),
+        radial-gradient(circle at 80% 25%, rgba(255, 79, 216, 0.14), transparent 25%),
+        linear-gradient(180deg, var(--bg2), var(--bg1));
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow: hidden;
     }
 
-    header {
-      background: rgba(0, 0, 0, 0.3);
-      padding: 20px 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .wrap {
+      width: min(1100px, 100%);
+      display: grid;
+      grid-template-columns: 1fr 310px;
+      gap: 20px;
+    }
+
+    .game-shell {
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
       backdrop-filter: blur(8px);
     }
 
-    header h1 {
-      font-size: 1.8rem;
-      color: #38bdf8;
-    }
-
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin-left: 20px;
-      transition: 0.3s;
-    }
-
-    nav a:hover {
-      color: #38bdf8;
-    }
-
-    .hero {
-      min-height: 80vh;
+    .topbar {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      text-align: center;
-      padding: 40px;
+      background: rgba(255,255,255,0.02);
     }
 
-    .hero-content {
-      max-width: 800px;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    .hero h2 {
-      font-size: 3rem;
-      margin-bottom: 20px;
-      color: #38bdf8;
+    .logo {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 0 18px rgba(69,230,255,0.8);
     }
 
-    .hero p {
-      font-size: 1.2rem;
-      margin-bottom: 30px;
-      color: #cbd5e1;
+    .brand h1 {
+      font-size: 18px;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+      text-transform: uppercase;
     }
 
-    .btn {
-      display: inline-block;
-      padding: 12px 24px;
-      background: #38bdf8;
-      color: #0f172a;
-      text-decoration: none;
-      border-radius: 10px;
-      font-weight: bold;
-      transition: 0.3s;
+    .top-meta {
+      color: var(--muted);
+      font-size: 13px;
     }
 
-    .btn:hover {
-      background: #0ea5e9;
-      transform: scale(1.05);
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0)),
+        #08111f;
     }
 
-    section {
-      padding: 60px 40px;
-      max-width: 1000px;
-      margin: auto;
+    .side {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
-    .cards {
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .panel h2 {
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .stats {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-      margin-top: 30px;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
     }
 
-    .card {
-      background: rgba(255, 255, 255, 0.08);
-      padding: 25px;
+    .stat {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--line);
       border-radius: 16px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-      transition: 0.3s;
+      padding: 14px;
     }
 
-    .card:hover {
-      transform: translateY(-5px);
-      background: rgba(255, 255, 255, 0.12);
+    .stat .label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
     }
 
-    footer {
+    .stat .value {
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .controls p,
+    .desc p {
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .kbd {
+      display: inline-block;
+      min-width: 28px;
       text-align: center;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.3);
-      color: #94a3b8;
-      margin-top: 40px;
+      padding: 4px 8px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text);
+      font-weight: 700;
+      margin: 0 2px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-weight: 700;
+      color: white;
+      transition: transform 0.15s ease, opacity 0.15s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    .primary {
+      background: linear-gradient(135deg, var(--accent), #1cb7ff);
+      box-shadow: 0 10px 24px rgba(69, 230, 255, 0.28);
+      color: #05101d;
+    }
+
+    .secondary {
+      background: linear-gradient(135deg, var(--accent2), #ff7a8c);
+      box-shadow: 0 10px 24px rgba(255, 79, 216, 0.22);
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+      padding-top: 8px;
+    }
+
+    .mobile-controls {
+      display: none;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .mobile-controls button {
+      padding: 16px 0;
+      font-size: 18px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--line);
+      box-shadow: none;
+      color: var(--text);
+    }
+
+    @media (max-width: 980px) {
+      .wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .mobile-controls {
+        display: grid;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 12px;
+      }
+
+      .topbar {
+        padding: 12px 14px;
+      }
+
+      .brand h1 {
+        font-size: 15px;
+      }
+
+      .top-meta {
+        font-size: 11px;
+      }
+
+      .panel {
+        border-radius: 18px;
+      }
+
+      .game-shell {
+        border-radius: 18px;
+      }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>OS4F_school</h1>
-    <nav>
-      <a href="#about">O nás</a>
-      <a href="#subjects">Předměty</a>
-      <a href="#contact">Kontakt</a>
-    </nav>
-  </header>
-
-  <section class="hero">
-    <div class="hero-content">
-      <h2>Vítejte na OS4F_school</h2>
-      <p>
-        Moderní školní webová stránka pro studenty, učitele a všechny,
-        kteří chtějí mít přehled o výuce, předmětech a novinkách.
-      </p>
-      <a href="#about" class="btn">Zjistit více</a>
+  <div class="wrap">
+    <div class="game-shell">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo"></div>
+          <h1>Neon Runner</h1>
+        </div>
+        <div class="top-meta">HTML / CSS / JavaScript • 1 soubor</div>
+      </div>
+      <canvas id="game" width="760" height="480"></canvas>
     </div>
-  </section>
 
-  <section id="about">
-    <h2>O škole</h2>
-    <p>
-      OS4F_school je ukázkový školní web zaměřený na jednoduchost,
-      přehlednost a moderní design. Může sloužit jako základ pro
-      školní projekt nebo prezentaci.
-    </p>
-  </section>
+    <aside class="side">
+      <section class="panel">
+        <h2>Statistiky</h2>
+        <div class="stats">
+          <div class="stat">
+            <div class="label">Skóre</div>
+            <div class="value" id="score">0</div>
+          </div>
+          <div class="stat">
+            <div class="label">Nejlepší</div>
+            <div class="value" id="best">0</div>
+          </div>
+          <div class="stat">
+            <div class="label">Rychlost</div>
+            <div class="value" id="speed">1.0×</div>
+          </div>
+          <div class="stat">
+            <div class="label">Stav</div>
+            <div class="value" id="state">Ready</div>
+          </div>
+        </div>
+      </section>
 
-  <section id="subjects">
-    <h2>Předměty</h2>
-    <div class="cards">
-      <div class="card">
-        <h3>Informatika</h3>
-        <p>Programování, hardware, sítě a moderní technologie.</p>
-      </div>
-      <div class="card">
-        <h3>Matematika</h3>
-        <p>Základy logiky, výpočtů a analytického myšlení.</p>
-      </div>
-      <div class="card">
-        <h3>Angličtina</h3>
-        <p>Komunikace, odborná slovní zásoba a jazykové dovednosti.</p>
-      </div>
-      <div class="card">
-        <h3>Elektrotechnika</h3>
-        <p>Obvody, měření a technické principy v praxi.</p>
-      </div>
-    </div>
-  </section>
+      <section class="panel controls">
+        <h2>Ovládání</h2>
+        <p>
+          Pohyb:
+          <span class="kbd">←</span>
+          <span class="kbd">A</span>
+          a
+          <span class="kbd">→</span>
+          <span class="kbd">D</span>
+        </p>
+        <p>
+          Skok:
+          <span class="kbd">↑</span>
+          <span class="kbd">W</span>
+          nebo
+          <span class="kbd">Space</span>
+        </p>
+        <p>
+          Pauza:
+          <span class="kbd">P</span>
+        </p>
+        <div class="btn-row">
+          <button class="primary" id="startBtn">Spustit / restart</button>
+          <button class="secondary" id="pauseBtn">Pauza</button>
+        </div>
 
-  <section id="contact">
-    <h2>Kontakt</h2>
-    <p>Email: info@os4f-school.cz</p>
-    <p>Telefon: +420 123 456 789</p>
-  </section>
+        <div class="mobile-controls">
+          <button id="leftBtn">◀</button>
+          <button id="jumpBtn">▲</button>
+          <button id="rightBtn">▶</button>
+        </div>
+      </section>
 
-  <footer>
-    <p>&copy; 2026 OS4F_school. Všechna práva vyhrazena.</p>
-  </footer>
+      <section class="panel desc">
+        <h2>O hře</h2>
+        <p>
+          Cílem je přežít co nejdéle, vyhýbat se překážkám a sbírat energetické orby.
+          Obtížnost se postupně zvyšuje.
+        </p>
+        <p>
+          Hra je udělaná čistě v HTML canvasu, takže ji můžete vložit přímo na web bez dalších souborů.
+        </p>
+        <div class="footer-note">Autor kódu: ChatGPT</div>
+      </section>
+    </aside>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
+
+    const scoreEl = document.getElementById("score");
+    const bestEl = document.getElementById("best");
+    const speedEl = document.getElementById("speed");
+    const stateEl = document.getElementById("state");
+
+    const startBtn = document.getElementById("startBtn");
+    const pauseBtn = document.getElementById("pauseBtn");
+
+    const leftBtn = document.getElementById("leftBtn");
+    const jumpBtn = document.getElementById("jumpBtn");
+    const rightBtn = document.getElementById("rightBtn");
+
+    const W = canvas.width;
+    const H = canvas.height;
+    const groundY = H - 74;
+
+    const bestStorageKey = "neon_runner_best";
+
+    let game;
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function rand(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    function intRand(min, max) {
+      return Math.floor(rand(min, max + 1));
+    }
+
+    function resetGame() {
+      game = {
+        running: false,
+        paused: false,
+        over: false,
+        score: 0,
+        best: Number(localStorage.getItem(bestStorageKey) || 0),
+        speed: 1,
+        time: 0,
+        distance: 0,
+        spawnTimer: 0,
+        orbTimer: 0,
+        flash: 0,
+        particles: [],
+        obstacles: [],
+        orbs: [],
+        stars: Array.from({ length: 80 }, () => ({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          s: Math.random() * 2 + 0.5,
+          a: Math.random() * 0.7 + 0.2
+        })),
+        player: {
+          x: 120,
+          y: groundY - 56,
+          w: 42,
+          h: 56,
+          vx: 0,
+          vy: 0,
+          speed: 5.2,
+          jump: 13.5,
+          onGround: true,
+          glow: 0,
+          laneLean: 0
+        },
+        input: {
+          left: false,
+          right: false,
+          jump: false
+        }
+      };
+
+      updateUI();
+    }
+
+    function updateUI() {
+      scoreEl.textContent = Math.floor(game.score);
+      bestEl.textContent = Math.floor(game.best);
+      speedEl.textContent = game.speed.toFixed(1) + "×";
+
+      let state = "Ready";
+      if (game.running && !game.paused && !game.over) state = "Hra běží";
+      if (game.paused) state = "Pauza";
+      if (game.over) state = "Konec";
+      stateEl.textContent = state;
+    }
+
+    function startGame() {
+      resetGame();
+      game.running = true;
+      game.paused = false;
+      game.over = false;
+      updateUI();
+    }
+
+    function togglePause() {
+      if (!game.running || game.over) return;
+      game.paused = !game.paused;
+      updateUI();
+    }
+
+    function endGame() {
+      game.over = true;
+      game.running = false;
+      game.flash = 1;
+
+      if (game.score > game.best) {
+        game.best = Math.floor(game.score);
+        localStorage.setItem(bestStorageKey, game.best);
+      }
+
+      for (let i = 0; i < 28; i++) {
+        game.particles.push({
+          x: game.player.x + game.player.w / 2,
+          y: game.player.y + game.player.h / 2,
+          vx: rand(-5, 5),
+          vy: rand(-5, 5),
+          life: rand(18, 40),
+          size: rand(2, 5),
+          color: Math.random() > 0.5 ? "#45e6ff" : "#ff4fd8"
+        });
+      }
+
+      updateUI();
+    }
+
+    function spawnObstacle() {
+      const type = Math.random() < 0.75 ? "block" : "tall";
+      const h = type === "block" ? intRand(30, 52) : intRand(58, 88);
+      const w = type === "block" ? intRand(28, 42) : intRand(24, 34);
+
+      game.obstacles.push({
+        x: W + 30,
+        y: groundY - h,
+        w,
+        h,
+        type
+      });
+    }
+
+    function spawnOrb() {
+      game.orbs.push({
+        x: W + 20,
+        y: groundY - intRand(90, 170),
+        r: 10,
+        pulse: Math.random() * Math.PI * 2
+      });
+    }
+
+    function addTrail() {
+      game.particles.push({
+        x: game.player.x + game.player.w * 0.3,
+        y: game.player.y + game.player.h * 0.75,
+        vx: rand(-1.8, -0.5),
+        vy: rand(-0.5, 0.5),
+        life: rand(10, 20),
+        size: rand(2, 4),
+        color: Math.random() > 0.4 ? "#45e6ff" : "#ffffff"
+      });
+    }
+
+    function intersects(a, b) {
+      return (
+        a.x < b.x + b.w &&
+        a.x + a.w > b.x &&
+        a.y < b.y + b.h &&
+        a.y + a.h > b.y
+      );
+    }
+
+    function update() {
+      if (!game.running || game.paused || game.over) return;
+
+      game.time++;
+      game.distance += 2.2 * game.speed;
+      game.score += 0.12 * game.speed;
+
+      if (game.time % 240 === 0) {
+        game.speed = Math.min(game.speed + 0.12, 3.3);
+      }
+
+      game.spawnTimer--;
+      game.orbTimer--;
+
+      if (game.spawnTimer <= 0) {
+        spawnObstacle();
+        game.spawnTimer = intRand(
+          Math.max(42, 104 - Math.floor(game.speed * 18)),
+          Math.max(80, 145 - Math.floor(game.speed * 14))
+        );
+      }
+
+      if (game.orbTimer <= 0) {
+        spawnOrb();
+        game.orbTimer = intRand(120, 220);
+      }
+
+      const p = game.player;
+
+      if (game.input.left) p.vx = -p.speed;
+      else if (game.input.right) p.vx = p.speed;
+      else p.vx *= 0.78;
+
+      p.x += p.vx;
+      p.x = clamp(p.x, 38, W - p.w - 38);
+
+      if (game.input.jump && p.onGround) {
+        p.vy = -p.jump;
+        p.onGround = false;
+      }
+
+      p.vy += 0.68;
+      p.y += p.vy;
+
+      if (p.y + p.h >= groundY) {
+        p.y = groundY - p.h;
+        p.vy = 0;
+        p.onGround = true;
+      }
+
+      p.glow = Math.max(0, p.glow - 0.04);
+      p.laneLean += ((game.input.right ? 1 : 0) - (game.input.left ? 1 : 0) - p.laneLean) * 0.14;
+
+      if (Math.abs(p.vx) > 0.2 || !p.onGround) {
+        addTrail();
+      }
+
+      for (let i = game.obstacles.length - 1; i >= 0; i--) {
+        const ob = game.obstacles[i];
+        ob.x -= 4.2 * game.speed;
+
+        if (intersects(p, ob)) {
+          endGame();
+        }
+
+        if (ob.x + ob.w < -10) {
+          game.obstacles.splice(i, 1);
+        }
+      }
+
+      for (let i = game.orbs.length - 1; i >= 0; i--) {
+        const orb = game.orbs[i];
+        orb.x -= 4.2 * game.speed;
+        orb.pulse += 0.08;
+
+        const nearestX = clamp(orb.x, p.x, p.x + p.w);
+        const nearestY = clamp(orb.y, p.y, p.y + p.h);
+        const dx = orb.x - nearestX;
+        const dy = orb.y - nearestY;
+
+        if (dx * dx + dy * dy < orb.r * orb.r) {
+          game.score += 15;
+          p.glow = 1;
+
+          for (let j = 0; j < 12; j++) {
+            game.particles.push({
+              x: orb.x,
+              y: orb.y,
+              vx: rand(-3, 3),
+              vy: rand(-3, 3),
+              life: rand(16, 30),
+              size: rand(2, 5),
+              color: Math.random() > 0.5 ? "#6dff8f" : "#45e6ff"
+            });
+          }
+
+          game.orbs.splice(i, 1);
+          continue;
+        }
+
+        if (orb.x + orb.r < -10) {
+          game.orbs.splice(i, 1);
+        }
+      }
+
+      for (let i = game.particles.length - 1; i >= 0; i--) {
+        const part = game.particles[i];
+        part.x += part.vx;
+        part.y += part.vy;
+        part.life--;
+        part.vx *= 0.99;
+        part.vy *= 0.99;
+
+        if (part.life <= 0) {
+          game.particles.splice(i, 1);
+        }
+      }
+
+      game.flash *= 0.92;
+      updateUI();
+    }
+
+    function drawBackground() {
+      const grad = ctx.createLinearGradient(0, 0, 0, H);
+      grad.addColorStop(0, "#0b1730");
+      grad.addColorStop(1, "#07101d");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+
+      for (const s of game.stars) {
+        ctx.globalAlpha = s.a;
+        ctx.fillStyle = "#d7e7ff";
+        ctx.fillRect(s.x, s.y, s.s, s.s);
+        s.x -= 0.2 * game.speed * s.s;
+        if (s.x < -2) {
+          s.x = W + 2;
+          s.y = Math.random() * (H - 120);
+        }
+      }
+      ctx.globalAlpha = 1;
+
+      ctx.save();
+      ctx.strokeStyle = "rgba(69,230,255,0.12)";
+      ctx.lineWidth = 1;
+
+      const horizon = groundY - 18;
+      for (let i = 0; i < 10; i++) {
+        const y = horizon + i * 18;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(W, y);
+        ctx.stroke();
+      }
+
+      for (let x = -40; x < W + 80; x += 40) {
+        ctx.beginPath();
+        ctx.moveTo(x + ((game.distance * 0.8) % 40), horizon);
+        ctx.lineTo(W / 2, H);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      ctx.fillStyle = "#0f1c31";
+      ctx.fillRect(0, groundY, W, H - groundY);
+
+      ctx.strokeStyle = "rgba(69,230,255,0.35)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, groundY);
+      ctx.lineTo(W, groundY);
+      ctx.stroke();
+    }
+
+    function drawPlayer() {
+      const p = game.player;
+      const glowSize = 18 + p.glow * 16;
+
+      ctx.save();
+      ctx.translate(p.x + p.w / 2, p.y + p.h / 2);
+      ctx.rotate(p.laneLean * 0.08);
+
+      const glow = ctx.createRadialGradient(0, 0, 4, 0, 0, glowSize);
+      glow.addColorStop(0, "rgba(69,230,255,0.35)");
+      glow.addColorStop(1, "rgba(69,230,255,0)");
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(0, 0, glowSize, 0, Math.PI * 2);
+      ctx.fill();
+
+      const bodyGrad = ctx.createLinearGradient(-p.w / 2, -p.h / 2, p.w / 2, p.h / 2);
+      bodyGrad.addColorStop(0, "#ecf5ff");
+      bodyGrad.addColorStop(1, "#6ad8ff");
+
+      ctx.shadowColor = "rgba(69,230,255,0.45)";
+      ctx.shadowBlur = 18;
+      ctx.fillStyle = bodyGrad;
+      roundRect(ctx, -p.w / 2, -p.h / 2, p.w, p.h, 12, true, false);
+
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = "#ff4fd8";
+      roundRect(ctx, -8, -18, 16, 10, 5, true, false);
+
+      ctx.fillStyle = "#08111f";
+      roundRect(ctx, -11, -4, 22, 16, 6, true, false);
+
+      ctx.strokeStyle = "rgba(255,255,255,0.32)";
+      ctx.lineWidth = 2;
+      roundRect(ctx, -p.w / 2, -p.h / 2, p.w, p.h, 12, false, true);
+
+      ctx.restore();
+    }
+
+    function drawObstacles() {
+      for (const ob of game.obstacles) {
+        const grad = ctx.createLinearGradient(ob.x, ob.y, ob.x + ob.w, ob.y + ob.h);
+        grad.addColorStop(0, "#ff4fd8");
+        grad.addColorStop(1, "#ff8a5b");
+
+        ctx.shadowColor = "rgba(255,79,216,0.35)";
+        ctx.shadowBlur = 18;
+        ctx.fillStyle = grad;
+        roundRect(ctx, ob.x, ob.y, ob.w, ob.h, 8, true, false);
+        ctx.shadowBlur = 0;
+
+        ctx.strokeStyle = "rgba(255,255,255,0.25)";
+        ctx.lineWidth = 2;
+        roundRect(ctx, ob.x, ob.y, ob.w, ob.h, 8, false, true);
+      }
+    }
+
+    function drawOrbs() {
+      for (const orb of game.orbs) {
+        const pulseR = orb.r + Math.sin(orb.pulse) * 2.2;
+
+        const glow = ctx.createRadialGradient(orb.x, orb.y, 1, orb.x, orb.y, 26);
+        glow.addColorStop(0, "rgba(109,255,143,0.85)");
+        glow.addColorStop(1, "rgba(109,255,143,0)");
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(orb.x, orb.y, 26, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#6dff8f";
+        ctx.beginPath();
+        ctx.arc(orb.x, orb.y, pulseR, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#effff3";
+        ctx.beginPath();
+        ctx.arc(orb.x - 2, orb.y - 2, 3.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function drawParticles() {
+      for (const part of game.particles) {
+        ctx.globalAlpha = Math.max(0, part.life / 40);
+        ctx.fillStyle = part.color;
+        ctx.beginPath();
+        ctx.arc(part.x, part.y, part.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function drawHUDOverlay() {
+      ctx.save();
+
+      if (!game.running && !game.over) {
+        drawCenterBox("Neon Runner", "Stiskněte Space nebo tlačítko Spustit");
+      }
+
+      if (game.paused) {
+        drawCenterBox("Pauza", "Stiskněte P nebo tlačítko Pauza");
+      }
+
+      if (game.over) {
+        drawCenterBox(
+          "Konec hry",
+          "Skóre: " + Math.floor(game.score) + " • restart: Space"
+        );
+      }
+
+      if (game.flash > 0.02) {
+        ctx.fillStyle = "rgba(255,91,110," + (game.flash * 0.25) + ")";
+        ctx.fillRect(0, 0, W, H);
+      }
+
+      ctx.restore();
+    }
+
+    function drawCenterBox(title, subtitle) {
+      const bw = 420;
+      const bh = 120;
+      const bx = (W - bw) / 2;
+      const by = (H - bh) / 2 - 24;
+
+      ctx.fillStyle = "rgba(8, 15, 28, 0.78)";
+      ctx.strokeStyle = "rgba(255,255,255,0.14)";
+      ctx.lineWidth = 1.5;
+      roundRect(ctx, bx, by, bw, bh, 20, true, true);
+
+      ctx.textAlign = "center";
+      ctx.fillStyle = "#f3f6ff";
+      ctx.font = "800 30px Inter, Arial";
+      ctx.fillText(title, W / 2, by + 46);
+
+      ctx.fillStyle = "#a6b2d4";
+      ctx.font = "500 16px Inter, Arial";
+      ctx.fillText(subtitle, W / 2, by + 78);
+    }
+
+    function roundRect(ctx, x, y, w, h, r, fill, stroke) {
+      const rr = Math.min(r, w / 2, h / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + rr, y);
+      ctx.arcTo(x + w, y, x + w, y + h, rr);
+      ctx.arcTo(x + w, y + h, x, y + h, rr);
+      ctx.arcTo(x, y + h, x, y, rr);
+      ctx.arcTo(x, y, x + w, y, rr);
+      ctx.closePath();
+      if (fill) ctx.fill();
+      if (stroke) ctx.stroke();
+    }
+
+    function render() {
+      drawBackground();
+      drawOrbs();
+      drawObstacles();
+      drawParticles();
+      drawPlayer();
+      drawHUDOverlay();
+    }
+
+    function loop() {
+      update();
+      render();
+      requestAnimationFrame(loop);
+    }
+
+    function setInput(key, pressed) {
+      if (key === "ArrowLeft" || key === "a" || key === "A") game.input.left = pressed;
+      if (key === "ArrowRight" || key === "d" || key === "D") game.input.right = pressed;
+      if (key === "ArrowUp" || key === "w" || key === "W" || key === " ") game.input.jump = pressed;
+    }
+
+    window.addEventListener("keydown", (e) => {
+      if (["ArrowLeft", "ArrowRight", "ArrowUp", " ", "a", "A", "d", "D", "w", "W", "p", "P"].includes(e.key)) {
+        e.preventDefault();
+      }
+
+      if ((e.key === " " || e.key === "ArrowUp" || e.key === "w" || e.key === "W") && (!game.running || game.over)) {
+        startGame();
+        return;
+      }
+
+      if (e.key === "p" || e.key === "P") {
+        togglePause();
+        return;
+      }
+
+      setInput(e.key, true);
+    });
+
+    window.addEventListener("keyup", (e) => {
+      setInput(e.key, false);
+    });
+
+    startBtn.addEventListener("click", startGame);
+    pauseBtn.addEventListener("click", togglePause);
+
+    function bindTouchButton(btn, onPress, onRelease = onPress) {
+      const press = (e) => {
+        e.preventDefault();
+        onPress();
+      };
+      const release = (e) => {
+        e.preventDefault();
+        onRelease();
+      };
+
+      btn.addEventListener("touchstart", press, { passive: false });
+      btn.addEventListener("touchend", release, { passive: false });
+      btn.addEventListener("touchcancel", release, { passive: false });
+
+      btn.addEventListener("mousedown", press);
+      btn.addEventListener("mouseup", release);
+      btn.addEventListener("mouseleave", release);
+    }
+
+    bindTouchButton(leftBtn, () => game.input.left = true, () => game.input.left = false);
+    bindTouchButton(rightBtn, () => game.input.right = true, () => game.input.right = false);
+    bindTouchButton(jumpBtn, () => {
+      if (!game.running || game.over) {
+        startGame();
+      } else {
+        game.input.jump = true;
+      }
+    }, () => game.input.jump = false);
+
+    resetGame();
+    loop();
+  </script>
 </body>
 </html>
